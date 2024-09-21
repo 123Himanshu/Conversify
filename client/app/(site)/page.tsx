@@ -18,7 +18,7 @@ export default function Home() {
           alt="logo"
         />
         <h2 className="text-2xl sm:text-3xl text-center font-bold mt-6 text-gray-900 tracking-tight dark:text-gray-100">
-          Sign Into your account
+          Sign Into Your Account
         </h2>
         <AuthForm />
       </div>

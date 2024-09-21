@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
     salt: {
       type: String,
     },
+    account: {
+      type: Boolean,
+      default: false,
+    },
     conversationIds: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,25 +40,13 @@ const userSchema = new mongoose.Schema(
         ref: "Message",
       },
     ],
-    accounts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Account",
-      },
-    ],
-    messages: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
-      },
-    ],
   },
   { timestamps: true }
 );
 
 userSchema.pre("save", function (next) {
   const user = this;
-  console.log(user);
+  if (!user.isModified("hashedPassword")) return next();
   const salt = bcrypt.genSaltSync(6);
   this.salt = salt;
   this.hashedPassword = bcrypt.hashSync(this.hashedPassword, salt);
@@ -65,7 +57,6 @@ userSchema.static(
   "matchPasswordAndGenerateToken",
   async function (email, password) {
     const user = await this.findOne({ email });
-    console.log(user);
     if (!user) throw new Error("User Not Found");
     const isMatch = await bcrypt.compare(password, user.hashedPassword);
     if (!isMatch) throw new Error("Incorrect Password");

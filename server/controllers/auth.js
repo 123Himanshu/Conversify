@@ -32,4 +32,9 @@ async function handleLogin(req, res) {
   }
 }
 
-module.exports = { handleSignUp, handleLogin };
+async function handleLogout(req, res) {
+  res.clearCookie("token");
+  res.status(200).json({ msg: "Logout Successful" });
+}
+
+module.exports = { handleSignUp, handleLogin, handleLogout };
