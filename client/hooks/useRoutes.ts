@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useConversation from "./useConversation";
 import { HiChat } from "react-icons/hi";
 import { HiArrowLeftOnRectangle, HiUsers } from "react-icons/hi2";
@@ -7,17 +7,17 @@ import { useMemo } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const SERVER_URL = "http://localhost:8000";
-
 const useRoutes = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { conversationId } = useConversation();
 
   const signOut = () => {
     axios
-      .get(`${SERVER_URL}/auth/logout`)
+      .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/logout`)
       .then((res) => {
         if (res.status === 200) {
+          router.push("/");
           toast.success(res.data.msg);
         }
       })
@@ -43,7 +43,7 @@ const useRoutes = () => {
       },
       {
         label: "Logout",
-        href: "/",
+        href: "#",
         onClick: () => signOut(),
         icon: HiArrowLeftOnRectangle,
       },

@@ -18,7 +18,7 @@ const conversationSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    messagesIds: [
+    messages: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",

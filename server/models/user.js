@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
         ref: "Message",
       },
     ],
+    online: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

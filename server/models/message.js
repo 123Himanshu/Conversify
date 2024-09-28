@@ -8,17 +8,17 @@ const messageSchema = new mongoose.Schema(
     image: {
       type: String,
     },
-    seenIds: [
+    seen: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "user",
+        ref: "User",
       },
     ],
     conversationId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "conversation",
     },
-    senderId: {
+    sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
@@ -26,6 +26,6 @@ const messageSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const Message = mongoose.model("message", messageSchema);
+const Message = mongoose.model("Message", messageSchema);
 
 module.exports = Message;

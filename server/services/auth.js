@@ -15,8 +15,13 @@ const setUser = (user) => {
 
 const getUser = (token) => {
   if (!token) return;
-  const user = jwt.verify(token, secretKey);
-  if (user) return user;
+  try {
+    const user = jwt.verify(token, secretKey);
+    if (user) return user;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
   return null;
 };
 

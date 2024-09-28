@@ -10,12 +10,14 @@ const cors = require("cors");
 const { getUser } = require("./services/auth");
 const conversationRouter = require("./routes/conversation.routes");
 const messageRouter = require("./routes/message.routes");
-const ws = require("ws");
+const Conversation = require("./models/conversation");
 const passportConfig = require("./passport");
 const passport = require("passport");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const User = require("./models/user");
+const usersRouter = require("./routes/users.routes");
+const settingsRouter = require("./routes/settings.routes");
 
 passportConfig(passport);
 
@@ -53,8 +55,10 @@ app.use(express.static(path.resolve("./public")));
 app.use(express.json());
 
 app.use("/auth", authRouter);
-app.use("/conversation", conversationRouter);
-app.use("/message", messageRouter);
+app.use("/api/messages", messageRouter);
+app.use("/users", usersRouter);
+app.use("/api/conversations", conversationRouter);
+app.use("/api/settings", settingsRouter);
 
 app.get("/authorization", async (req, res) => {
   const userToken = req.cookies?.token;
@@ -69,9 +73,9 @@ const server = app.listen(PORT, () => {
   console.log(`Server Started at ${PORT}`);
 });
 
-const wss = new ws.Server({ server });
-
-wss.on("connection", (connection) => {
-  console.log("Connected");
-  connection.send("Hello");
+const io = require("socket.io")(server, {
+  pingTimeout: 60000,
+  cors: {
+    origin: "http://localhost:3000",
+  },
 });

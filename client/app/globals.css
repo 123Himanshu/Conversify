@@ -11,3 +11,7 @@ body,
 * {
   @apply transition-colors duration-200;
 }
+
+*::-webkit-scrollbar {
+  display: none;
+}

@@ -24,8 +24,8 @@ function configurePassport() {
             });
             const googleAccount = await Account.create({
               userId: user._id,
-              provider: req.user.provider,
-              providerAccountId: req.user.id,
+              provider: profile.provider,
+              providerAccountId: profile.id,
               accessToken: accessToken,
               refreshToken: refreshToken,
               type: "oauth",
