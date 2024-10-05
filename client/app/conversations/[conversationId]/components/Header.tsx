@@ -67,9 +67,9 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             <div className=" dark:text-accent-3">
               {conversation?.name || otherUser?.name}
             </div>
-            <div className="text-sm font-light text-neutral-500 dark:text-accent-2">
+            {/* <div className="text-sm font-light text-neutral-500 dark:text-accent-2">
               {statusText}
-            </div>
+            </div> */}
           </div>
         </div>
         <HiEllipsisHorizontal

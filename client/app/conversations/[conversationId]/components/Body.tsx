@@ -1,13 +1,13 @@
 "use client";
 
 import useConversation from "@/hooks/useConversation";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MessageBox from "./MessageBox";
 import axios from "axios";
 import { useAppSelector } from "@/redux/hooks";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
-import { current } from "@reduxjs/toolkit";
+import { useReplyContext } from "./ReplyMessageContext";
 
 interface BodyProps {
   messages: any[];
@@ -18,6 +18,7 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
   // console.log(messages);
   const bottomRef = useRef<HTMLDivElement>(null);
   const { conversationId } = useConversation();
+  const { replyMessage, setReplyMessage } = useReplyContext();
   const user = useAppSelector((state) => state.user.user);
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
         }
       )
       .then((res) => {
-        console.log("Seen Response", res);
+        // console.log("Seen Response", res);
       })
       .catch((err) => {
         console.log("Seen Error", err);
@@ -65,15 +66,29 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
       );
     };
 
+    const deleteMessageHandler = (message: any) => {
+      setMessages((current: any) => {
+        return current.filter((cm: any) => cm._id != message._id);
+      });
+    };
+
     pusherClient.bind("messages:new", messageHandler);
     pusherClient.bind("message:update", updateMessageHandler);
+    pusherClient.bind("message:delete", deleteMessageHandler);
 
     return () => {
       pusherClient.unsubscribe(conversationId);
       pusherClient.unbind("messages:new", messageHandler);
       pusherClient.unbind("message:update", updateMessageHandler);
+      pusherClient.unbind("message:delete", deleteMessageHandler);
     };
   }, [conversationId]);
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key == "Escape") {
+      setReplyMessage(null);
+    }
+  });
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -87,6 +102,8 @@ const Body: React.FC<BodyProps> = ({ messages, setMessages }) => {
             isLast={i === messages.length - 1}
             key={i}
             data={message}
+            replyMessage={replyMessage}
+            setReplyMessage={setReplyMessage}
           />
         ))}
       </div>

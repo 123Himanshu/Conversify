@@ -6,12 +6,22 @@ html,
 body,
 :root {
   height: 100%;
+  scroll-behavior: smooth;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 * {
   @apply transition-colors duration-200;
+  scroll-behavior: smooth;
 }
 
 *::-webkit-scrollbar {
   display: none;
+}
+
+.hover-opacity:hover .options {
+  opacity: 1;
 }

@@ -2,8 +2,10 @@
 import clsx from "clsx";
 import useConversation from "@/hooks/useConversation";
 import EmptyStack from "@/components/EmptyStack";
+import axios from "axios";
 
 const Home = () => {
+  axios.defaults.withCredentials = true;
   const { isOpen } = useConversation();
   return (
     <div

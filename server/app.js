@@ -10,8 +10,7 @@ const cors = require("cors");
 const { getUser } = require("./services/auth");
 const conversationRouter = require("./routes/conversation.routes");
 const messageRouter = require("./routes/message.routes");
-const Conversation = require("./models/conversation");
-const passportConfig = require("./passport");
+const passportConfig = require("./services/passport");
 const passport = require("passport");
 const session = require("express-session");
 const bodyParser = require("body-parser");
@@ -23,7 +22,7 @@ passportConfig(passport);
 
 app.use(
   cors({
-    origin: ["*", process.env.CLIENT_URL],
+    origin: ["https://newconversify.vercel.app", "http://localhost:3000"],
     credentials: true,
   })
 );
@@ -33,7 +32,12 @@ app.use(
     secret: "SouravG",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: {
+      secure: true,
+      sameSite: "none",
+      maxAge: 3 * 24 * 60 * 60 * 1000,
+      httpOnly: true,
+    },
   })
 );
 
@@ -69,6 +73,10 @@ app.get("/authorization", async (req, res) => {
   return res.status(200).json({ user, msg: "Authorized" });
 });
 
+app.get("/", (req, res) => {
+  return res.send("Hello World!");
+});
+
 const server = app.listen(PORT, () => {
   console.log(`Server Started at ${PORT}`);
 });
@@ -76,6 +84,6 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000",
+    origin: "*", 
   },
 });

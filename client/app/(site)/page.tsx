@@ -5,7 +5,6 @@ import axios from "axios";
 
 export default function Home() {
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = "http://localhost:8000";
   return (
     <div className="flex flex-col justify-center min-h-screen py-12 sm:px-6 lg:px-8 bg-gray-100 dark:bg-primary">
       <div className="w-full flex justify-end">

@@ -115,9 +115,9 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                             )}
                           </div>
                           <div className="dark:text-accent-3">{title}</div>
-                          <div className="text-sm text-gray-500 dark:text-accent-2">
+                          {/* <div className="text-sm text-gray-500 dark:text-accent-2">
                             {statusText}
-                          </div>
+                          </div> */}
                           <div className="flex gap-10 my-8">
                             <div
                               onClick={() => {

@@ -24,7 +24,12 @@ const DesktopItem: React.FC<DesktopItem> = ({
   };
   return (
     <li onClick={handleClick}>
-      <Tippy content={label} placement="right">
+      <Tippy
+        content={label}
+        placement="right"
+        hideOnClick
+        touch={["hold", 1000]}
+      >
         <Link
           href={href}
           className={clsx(

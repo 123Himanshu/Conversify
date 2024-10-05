@@ -11,14 +11,15 @@ import ConversationBox from "./ConversationBox";
 import GroupChatModal from "./GroupChatModal";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/slices/user/user/userSlice";
-import { pusherClient } from "@/app/libs/pusher";
+import { pusherClient } from "@/libs/pusher";
 import { find } from "lodash";
+import ConversationSkeleton from "./conversationSkeleton";
 
 interface ConversationListProps {
   intialItems: any[];
 }
 
-const ConversationList: React.FC<ConversationListProps> = () => {
+const ConversationList = () => {
   const { isOpen, conversationId } = useConversation();
   const [conversations, setConversations] = useState<any[]>([]);
   const [allUsers, setAllUsers] = useState([]);
@@ -26,26 +27,31 @@ const ConversationList: React.FC<ConversationListProps> = () => {
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useDispatch();
   const router = useRouter();
+  const skeletons = 10;
 
   const pusherKey = useMemo(() => {
     return user?.email;
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
-        params: {
-          userId: user?._id,
-        },
-      })
-      .then((res) => {
-        if (res.data.length < 1) return router.push("/users");
-        setConversations(res.data);
-      })
-      .catch((err) => {
-        toast.error(err.msg);
-        console.log(err);
-      });
+    const fetchConversations = async () => {
+      if (user) {
+        await axios
+          .get(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/conversations/all`, {
+            params: {
+              userId: user?._id,
+            },
+          })
+          .then((res) => {
+            if (res.data.length < 1) return;
+            setConversations(res.data);
+          })
+          .catch((err) => {
+            toast.error(err.msg);
+            console.log(err);
+          });
+      }
+    };
 
     const fetchUsers = async () => {
       try {
@@ -70,14 +76,16 @@ const ConversationList: React.FC<ConversationListProps> = () => {
         console.log("Error", error);
       }
     };
+    fetchConversations();
     fetchUsers();
-  }, []);
+  }, [user?._id]);
 
   useEffect(() => {
     if (!pusherKey) return;
     pusherClient.subscribe(pusherKey);
 
     const newConversationHandler = (newConversation: any) => {
+      console.log(newConversation);
       setConversations((prev) => {
         if (find(prev, { _id: newConversation?._id })) {
           return prev;
@@ -87,26 +95,30 @@ const ConversationList: React.FC<ConversationListProps> = () => {
     };
 
     const deletedConversationHandler = (deletedConversation: any) => {
+      console.log(deletedConversation);
       setConversations((prev) => {
-        return prev.filter((conversation) => {
-          return conversation._id !== deletedConversation._id;
-        });
+        return [
+          ...prev.filter((convo) => convo?._id != deletedConversation?._id),
+        ];
       });
+      if (conversationId == deletedConversation?._id) {
+        router.push("/conversations");
+      }
     };
 
     const conversationUpdateHandler = (updatedConversation: any) => {
-      console.log(updatedConversation);
-      setConversations((prev) => {
-        return prev.map((conversation: any) => {
-          if (conversation._id === updatedConversation._id) {
-            return {
-              ...conversation,
-              messages: updatedConversation.messages,
-            };
-          }
-          return conversation;
-        });
-      });
+      // console.log(conversations);
+      const updateConversation = conversations.find(
+        (convo) => convo?._id == updatedConversation?._id
+      );
+
+      if (updateConversation) {
+        updateConversation.messages = updatedConversation?.messages;
+        const allConversations = conversations.filter(
+          (convo) => convo?._id != updatedConversation?._id
+        );
+        setConversations([updateConversation, ...allConversations]);
+      }
     };
 
     pusherClient.bind("conversation:new", newConversationHandler);
@@ -119,7 +131,7 @@ const ConversationList: React.FC<ConversationListProps> = () => {
       pusherClient.unbind("conversation:delete", deletedConversationHandler);
       pusherClient.unbind("conversation:update", conversationUpdateHandler);
     };
-  }, [pusherKey]);
+  }, [pusherKey, conversationId, router, conversations, user?._id]);
 
   return (
     <>
@@ -141,18 +153,22 @@ const ConversationList: React.FC<ConversationListProps> = () => {
             </div>
             <div
               onClick={() => setIsGroupModalOpen(true)}
-              className="rounded-full p-2 bg-gray-100 text-gray-600 cursor-pointer hover:opacity-75 transition dark:bg-secondary dark:text-accent-1 dark:ring-slate-300"
+              className="rounded-full p-2 bg-gradient-to-br from-blue-400 to-blue-600 text-slate-200 cursor-pointer hover:opacity-75 transition dark:bg-secondary dark:text-accent-1 dark:ring-slate-300"
             >
               <MdOutlineGroupAdd size={22} />
             </div>
           </div>
-          {conversations.map((item, index) => (
-            <ConversationBox
-              key={index}
-              data={item}
-              selected={conversationId == item?._id}
-            />
-          ))}
+          {conversations.length > 0
+            ? conversations.map((item, index) => (
+                <ConversationBox
+                  key={index}
+                  data={item}
+                  selected={conversationId === item?._id}
+                />
+              ))
+            : [...Array(skeletons)].map((_, index) => (
+                <ConversationSkeleton key={index} />
+              ))}
         </div>
       </aside>
     </>

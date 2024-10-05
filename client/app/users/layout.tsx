@@ -11,8 +11,6 @@ import "tippy.js/dist/tippy.css";
 const UsersLayout = ({ children }: { children: React.ReactNode }) => {
   const [allUsers, setAllUsers] = useState([]);
   axios.defaults.withCredentials = true;
-  const router = useRouter();
-  const user = useAppSelector((state) => state.user.user);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -29,13 +27,13 @@ const UsersLayout = ({ children }: { children: React.ReactNode }) => {
               })
               .then((res) => {
                 setAllUsers(res.data.users);
-                console.log(res.data.users);
+                // console.log(res.data.users);
               })
               .catch((err) => {
                 console.log(err);
               });
           }
-        } else router.push("/");
+        }
       } catch (error) {
         console.log("Error", error);
       }

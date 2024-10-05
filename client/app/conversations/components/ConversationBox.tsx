@@ -19,7 +19,6 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
   selected,
 }) => {
   const router = useRouter();
-  // console.log(data);
   const user = useAppSelector((state) => state.user.user);
 
   const handleClick = useCallback(() => {
@@ -63,14 +62,14 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       }
     });
     return image[0] ? image[0] : image[1];
-  }, []);
+  }, [data, selected, user?._id, router]);
 
   return (
     <div
       onClick={handleClick}
       className={clsx(
         "w-full relative flex items-center space-x-3 hover:bg-neutral-100 rounded-lg transition cursor-pointer p-3 dark:bg-primary dark:hover:bg-tertiary",
-        selected ? "bg-neutral-100" : "bg-white"
+        selected ? "bg-gradient-to-br from-blue-400 to-blue-600" : "bg-white"
       )}
     >
       {data?.isGroup ? (
@@ -81,7 +80,12 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
       <div className="min-w-0 flex-1">
         <div className="focus:outline-none">
           <div className="flex justify-between items-center mb-1">
-            <p className="text-base font-medium text-gray-900 dark:text-accent-3 capitalize">
+            <p
+              className={clsx(
+                "text-base font-medium text-black capitalize",
+                selected ? "text-white" : "text-black dark:text-white"
+              )}
+            >
               {data.isGroup
                 ? data.name
                 : data.userIds.map((userId: any) =>
@@ -89,21 +93,25 @@ const ConversationBox: React.FC<ConversationBoxProps> = ({
                   )}
             </p>
             {lastMessage?.createdAt && (
-              <p className="text-xs text-gray-400 font-light">
+              <p
+                className={clsx(
+                  "text-xs font-light",
+                  selected ? "text-white" : "text-gray-500 dark:text-white"
+                )}
+              >
                 {format(new Date(lastMessage.createdAt), "p")}
               </p>
             )}
           </div>
-          {/* <p
+          <p
             className={clsx(
               "truncate text-sm",
-              hasSeen
-                ? "text-gray-500 dark:text-gray-400"
-                : "text-black dark:text-white font-medium"
+              hasSeen ? "font-light" : "font-bold",
+              selected ? "text-white" : "text-gray-500 dark:text-white"
             )}
           >
             {lastMessageText}
-          </p> */}
+          </p>
         </div>
       </div>
     </div>

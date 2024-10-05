@@ -13,7 +13,7 @@ async function handleSignUp(req, res) {
   if (user) {
     return res.status(200).json({ msg: "User Created Successfully" });
   } else {
-    return res.status(400).json({ msg: "Some Error Has Occured" });
+    return res.status(400).json({ msg: "Some Error Has Occurred" });
   }
 }
 
@@ -21,19 +21,29 @@ async function handleLogin(req, res) {
   const { email, password } = req.body;
   try {
     const token = await User.matchPasswordAndGenerateToken(email, password);
-    const thirtyDaysInMilliseconds = 30 * 24 * 60 * 60 * 1000;
-    res.cookie("token", token, {
+    const threeDaysInMilliseconds = 3 * 24 * 60 * 60 * 1000;
+    const cookieOptions = {
+      maxAge: threeDaysInMilliseconds,
       httpOnly: true,
-      maxAge: thirtyDaysInMilliseconds,
-    });
-    res.status(200).json({ msg: "Login Successful" });
+      secure: true,
+      sameSite: "none",
+    };
+    res
+      .status(200)
+      .cookie("token", token, cookieOptions)
+      .json({ msg: "Login Successful" });
   } catch (error) {
     res.status(400).json({ msg: error.message });
   }
 }
 
 async function handleLogout(req, res) {
-  res.clearCookie("token");
+  res.cookie("token", "", {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+  });
   res.status(200).json({ msg: "Logout Successful" });
 }
 

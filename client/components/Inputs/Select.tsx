@@ -15,6 +15,12 @@ const Select: React.FC<SelectProps> = ({
   options,
   value,
 }) => {
+  const theme = document.documentElement.contains(
+    document.querySelector(".dark")
+  )
+    ? "dark"
+    : "light";
+
   const customStyles = {
     control: (provided: any) => ({
       ...provided,
@@ -56,12 +62,19 @@ const Select: React.FC<SelectProps> = ({
     }),
   };
 
+  const lightStyles = {
+    menuPortal: (base: any) => ({
+      ...base,
+      zIndex: 9999,
+    }),
+  };
+
   return (
-    <div className="z-[100]">
+    <div className="z-[10]">
       <label className="block text-sm font-medium leading-6 text-gray-900 dark:text-accent-1">
         {label}
       </label>
-      <div className="mt-2">
+      <div className="mt-2 z-20">
         <ReactSelect
           isDisabled={disabled}
           value={value}
@@ -69,7 +82,7 @@ const Select: React.FC<SelectProps> = ({
           isMulti
           options={options}
           menuPortalTarget={document.body}
-          styles={customStyles}
+          styles={theme === "dark" ? customStyles : lightStyles}
           classNamePrefix="react-select"
         />
       </div>
