@@ -7,6 +7,7 @@ import { HiChevronLeft, HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
 import ImageOpener from "@/components/ImageOpener";
 import AvatarGroup from "@/components/AvatarGroup";
+import { HiPhone, HiVideoCamera } from "react-icons/hi";
 
 interface HeaderProps {
   conversation: any;
@@ -72,13 +73,23 @@ const Header: React.FC<HeaderProps> = ({ conversation }) => {
             </div> */}
           </div>
         </div>
-        <HiEllipsisHorizontal
-          size={32}
-          onClick={() => {
-            setDrawerOpen(true);
-          }}
-          className="text-sky-500 cursor-pointer hover:text-sky-600 transition dark:text-accent-4"
-        />
+        <div className="flex items-center justify-center gap-6">
+          <HiPhone
+            size={22}
+            className="text-sky-500 cursor-pointer hover:text-sky-600 transition dark:text-accent-4 dark:hover:text-sky-600"
+          />
+          <HiVideoCamera
+            size={26}
+            className="text-sky-500 cursor-pointer hover:text-sky-600 transition dark:text-accent-4 dark:hover:text-sky-600"
+          />
+          <HiEllipsisHorizontal
+            size={32}
+            onClick={() => {
+              setDrawerOpen(true);
+            }}
+            className="text-sky-500 cursor-pointer hover:text-sky-600 transition dark:text-accent-4 dark:hover:text-sky-600"
+          />
+        </div>
       </div>
     </>
   );

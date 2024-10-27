@@ -107,7 +107,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
               >
                 <div className="h-11 min-w-1 max-w-1 bg-blue-400"></div>
                 <div className="py-1 px-2 h-full overflow-scroll select-none text-sm italic whitespace-nowrap text-ellipsis flex items-center">
-                  {data.replyMessage.body}
+                  {data.replyMessage.body || "Image"}
                 </div>
               </a>
             )}
