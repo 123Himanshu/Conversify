@@ -1,4 +1,5 @@
-
+Easy login - Email - test@gmail.com 
+            Password - fdgfgfgfg
 🌐 Explore Conversify live here
 
 Conversify is a feature-rich chat application designed for seamless communication experiences. With real-time messaging, group conversations, customizable themes, and Google authentication, Conversify offers a dynamic platform for enhanced connectivity and personal growth. Join the conversation today! 💬✨
