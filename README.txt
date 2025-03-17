@@ -21,18 +21,3 @@ Conversify is a feature-rich chat application designed for seamless communicatio
 Installation
 Clone the repository:
 git clone https://github.com/Sourav-Goyal19/Conversify.git
-Install dependencies:
-cd Conversify
-cd client 
-npm install
-cd Conversify
-cd server 
-npm install
-Start the frontend and backend servers:
-Start frontend server
-npm run dev
-Start backend server
-npm start
-Access the application locally via http://localhost:3000/
-Live Demo
-Explore Conversify live here
